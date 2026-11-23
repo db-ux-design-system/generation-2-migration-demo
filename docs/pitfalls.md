@@ -11,7 +11,9 @@ The general rules behind these pitfalls are described in [Migration from DB UI](
 **`package.json`, `src/main.tsx`**
 
 - `@db-ui/core` and `@db-ui/react-elements` are replaced by `@db-ux/react-core-components`. For the DB look, add `@db-ux/db-theme`.
-- The single Generation 2 stylesheet becomes four imports in a fixed order: theme, foundations bundle, icons, components. The [general migration guide](https://github.com/db-ux-design-system/core-web/blob/main/docs/migration/db-ui/general-migration.md#required-css-imports--token-architecture) lists them.
+- The single Generation 2 stylesheet becomes two imports in this order: `@db-ux/core-components/build/styles/bundle.css` (foundations and components with the whitelabel theme), then `@db-ux/db-theme/build/styles/rollup.css` (overwrites it with DB fonts, icons and colors). Without the DB Theme, the [general migration guide](https://github.com/db-ux-design-system/core-web/blob/main/docs/migration/db-ui/general-migration.md#required-css-imports--token-architecture) lists the whitelabel imports.
+- **Encrypted assets:** The DB Theme ships fonts, icons and images encrypted. Without the asset keys in `.env` and the approved install scripts, the build fails with `ENOENT` for a file under `node_modules/@db-ux/db-theme*/build/`. The [README](../README.md#4-install-the-generation-3-packages) describes the setup.
+- **Vite alias:** The DB Theme CSS references its assets as `@db-ux/...` paths. Without the alias `'@db-ux': path.resolve('node_modules/@db-ux')` in `vite.config.ts`, fonts and icons are missing at runtime.
 - `vite.config.ts` disables CSS minification because `@db-ui/core` 3.3.7 ships an invalid selector. Remove the workaround after the migration.
 
 ## Header and navigation
@@ -44,12 +46,13 @@ The general rules behind these pitfalls are described in [Migration from DB UI](
 **`src/ResultsPage.tsx`**
 
 - **Breadcrumb:** The plain list of links becomes the Breadcrumb component with Breadcrumb Items. Long trails collapse automatically (`maxItems`).
-- **Notification:** The notice is plain markup with `data-type="informative"` inside a `section data-variant="hovering"` wrapper. It becomes the Notification component with `semantic="informational"`. The wrapper has no counterpart: the in-content look is the default in Generation 3, so drop the wrapper. The visually hidden `<em>Information:</em>` is no longer needed either, because the component announces the semantic itself. Check this with a screen reader.
+- **Notification:** The notice is plain markup with `data-type="informative"` inside a `section data-variant="hovering"` wrapper. It becomes the Notification component with `semantic="informational"`. Drop the wrapper and use `variant="standalone"` for the framed in-content look. The default `docked` is meant for global alerts between header and content. Check with a screen reader whether the notice is still announced as information without the visually hidden `<em>Information:</em>`.
 - **Filter chips:** Chip and Tag are merged. An interactive filter becomes a Tag that contains a checkbox.
   - **Capitalization:** Generation 2 capitalizes every word of a chip label with CSS (`text-transform: capitalize`). The code says "Direct only", the screen shows "Direct Only". After the migration the label appears as written. This is correct, even if it looks like a change in the before/after comparison.
   - **Selected state:** In Generation 2 the selected state is shown by color only. The Generation 3 Tag with a checkbox can show a check mark (`showCheckState`). Keep it on, so the state does not depend on color alone.
 - **Tabs:** The tab bar becomes Tabs with a Tab List, Tab Items and Tab Panels.
 - **Cards:** The card markup with `figure` and `figcaption` becomes a Card with its content as children. The "Select" button stays a separate button inside the card.
+  - **Layout:** The Card sets `display: flex; flex-direction: column` with a higher specificity than a single class. A layout class on the Card itself, for example a two-column grid, is overridden, and the content ends up stacked and centered. Put the layout class on a wrapper inside the Card.
 - **Tags:** The tag variants `informative`, `success` and `warning` move to `semantic`.
 - **Accordion:** Each disclosure becomes an Accordion Item. Group them in an Accordion. `summary` becomes `headline`.
 - **Link and button with icon:** The Link has no icon props in Generation 3. Drop the icon or use a different pattern if it carries meaning.

@@ -44,7 +44,10 @@ The app code contains no hints, so you migrate it like a real project. [docs/pit
 
 - Node.js 26 (see `.nvmrc`), npm 11
 - [Kiro](https://kiro.dev) or VS Code with GitHub Copilot
-- For the DB look in Generation 3: the asset keys `ASSET_PASSWORD` and `ASSET_INIT_VECTOR` from the [Marketingportal](https://marketingportal.extranet.deutschebahn.com/marketingportal/Design-Anwendungen/db-ux-design-system/resources/db-theme) (DB and contractors only). Without them the app works with the default theme.
+- For Generation 3 with the DB Theme: the asset keys `ASSET_PASSWORD` and `ASSET_INIT_VECTOR` from the [Marketingportal](https://marketingportal.extranet.deutschebahn.com/marketingportal/Design-Anwendungen/db-ux-design-system/resources/db-theme) (DB and contractors only). Deep links into the Marketingportal don't work, so open the link again after you log in.
+
+> [!IMPORTANT]
+> `@db-ux/db-theme` ships its fonts, icons and images encrypted. Without the asset keys they stay encrypted, and the Generation 3 build fails. This also applies to the reference branch `generation-3`. See [step 4](#4-install-the-generation-3-packages) for the setup.
 
 ## Run the Generation 2 app
 
@@ -89,14 +92,44 @@ npm uninstall @db-ui/core @db-ui/react-elements
 npm install --save-exact @db-ux/react-core-components @db-ux/db-theme
 ```
 
-For the DB look, put the asset keys into a `.env` file in the project root (it is git-ignored), then allow the install scripts that decrypt fonts and icons:
+Create a `.env` file in the project root with the asset keys from the Marketingportal. The file is git-ignored, so never commit it.
+
+```env
+ASSET_PASSWORD=<value from the Marketingportal>
+ASSET_INIT_VECTOR=<value from the Marketingportal>
+```
+
+Then allow the install scripts that decrypt fonts, icons and images:
 
 ```sh
 npm install-scripts approve @db-ux/db-theme @db-ux/db-theme-fonts @db-ux/db-theme-icons
 npm install
 ```
 
-npm 11 blocks install scripts of dependencies by default. Without the approval, the fonts and icons stay encrypted.
+npm 11 blocks install scripts of dependencies by default. Without the approval, the files stay encrypted.
+
+If you add or fix the `.env` after the install, run the decryption again:
+
+```sh
+npm rebuild @db-ux/db-theme @db-ux/db-theme-fonts @db-ux/db-theme-icons
+```
+
+The decryption worked if `node_modules/@db-ux/db-theme-fonts/build/assets/` contains `.woff2` files and not only `.woff2.enc` files.
+
+The DB Theme CSS references its assets as `@db-ux/...` paths. Add an alias in `vite.config.ts` so Vite can resolve them:
+
+```ts
+import * as path from 'node:path';
+
+export default defineConfig({
+	plugins: [react()],
+	resolve: {
+		alias: {
+			'@db-ux': path.resolve('node_modules/@db-ux')
+		}
+	}
+});
+```
 
 ### 5. Migrate file by file
 
