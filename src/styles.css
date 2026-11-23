@@ -1,36 +1,29 @@
 /*
- App styles in the way many Generation 2 projects wrote them:
- hard-coded pixel values, old color tokens, box-shadow and opacity tricks.
- These are intentional migration pitfalls.
+ App layout styles. Spacing, type and colors use Generation 3 tokens,
+ so the app follows Density, Light Mode and Dark Mode.
 */
 
-.booking-section {
-	max-width: 960px;
-	margin: 0 auto;
-	padding: 32px 16px 64px;
-}
+/* Page width and padding come from DBSection (width="medium", same as the footer). */
 
+.search-hint,
 .results-summary {
-	color: var(--db-color-cool-gray-600);
-	font-size: 16px;
-	line-height: 24px;
-	margin: 0 0 24px;
+	color: var(--db-adaptive-on-bg-basic-emphasis-80-default);
+	font: var(--db-type-body-sm);
+	margin-block: var(--db-spacing-fixed-xs) var(--db-spacing-fixed-lg);
 }
 
 .results-subheading {
-	font-size: 20px;
-	font-weight: 700;
-	margin: 40px 0 12px;
+	margin-block: var(--db-spacing-fixed-xl) var(--db-spacing-fixed-sm);
 }
 
 /* --- Search form --- */
 
 .search-form {
 	display: grid;
-	gap: 24px;
-	padding: 24px;
-	background-color: var(--db-color-cool-gray-100);
-	border-radius: 8px;
+	gap: var(--db-spacing-fixed-lg);
+	padding: var(--db-spacing-fixed-lg);
+	background-color: var(--db-adaptive-bg-basic-level-2-default);
+	border-radius: var(--db-border-radius-sm);
 }
 
 .search-form fieldset {
@@ -40,28 +33,37 @@
 }
 
 .search-form legend {
-	font-size: 14px;
+	font: var(--db-type-body-sm);
 	font-weight: 700;
-	margin-bottom: 8px;
+	margin-block-end: var(--db-spacing-fixed-xs);
 }
 
 .search-form__stations {
 	display: grid;
 	grid-template-columns: 1fr auto 1fr;
-	align-items: start;
-	gap: 12px;
+	/* Label above and message below the input have about the same height,
+	   so centering puts the swap button at the height of the input fields. */
+	align-items: center;
+	gap: var(--db-spacing-fixed-sm);
 }
 
 .search-form__row {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
-	gap: 16px;
+	gap: var(--db-spacing-fixed-md);
 }
 
 .search-form__group {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 8px 24px;
+	gap: var(--db-spacing-fixed-xs) var(--db-spacing-fixed-lg);
+}
+
+.search-form__submit {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--db-spacing-fixed-md);
 }
 
 @media (max-width: 640px) {
@@ -73,58 +75,39 @@
 
 /* --- Results --- */
 
-.filter-chips {
+.results-notice {
+	margin-block-end: var(--db-spacing-fixed-xs);
+}
+
+.filter-tags {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 8px;
-	margin: 24px 0 8px;
+	gap: var(--db-spacing-fixed-xs);
+	margin-block: var(--db-spacing-fixed-lg) var(--db-spacing-fixed-xs);
 }
 
 .connection-list {
 	display: grid;
-	gap: 16px;
-	padding-top: 16px;
-}
-
-.results-notice {
-	margin-bottom: 8px;
-}
-
-.connection-card {
-	background-color: #fff;
-	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
-	border-radius: 8px;
-}
-
-.connection-card:hover {
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+	gap: var(--db-spacing-fixed-md);
+	padding-block-start: var(--db-spacing-fixed-md);
 }
 
 /* Connection details on the left, price and selection on the right. */
-.connection-card .connection-card__layout {
+.connection-card {
 	display: grid;
 	grid-template-columns: 1fr auto;
 	align-items: center;
-	gap: 16px 24px;
-	padding: 4px 8px;
-	/* @db-ui/core limits the card caption to 60ch, too narrow for this two-column layout. */
-	max-width: none;
-	box-sizing: border-box;
-}
-
-.connection-card__times {
-	font-size: 24px;
-	margin: 0;
+	gap: var(--db-spacing-fixed-md) var(--db-spacing-fixed-lg);
 }
 
 .connection-card__meta {
-	opacity: 0.6;
-	margin: 4px 0 8px;
+	color: var(--db-adaptive-on-bg-basic-emphasis-70-default);
+	margin-block: var(--db-spacing-fixed-2xs) var(--db-spacing-fixed-xs);
 }
 
 .connection-card__tags {
 	display: flex;
-	gap: 8px;
+	gap: var(--db-spacing-fixed-xs);
 	margin: 0;
 }
 
@@ -132,25 +115,24 @@
 	display: flex;
 	flex-direction: column;
 	align-items: flex-end;
-	gap: 8px;
-	text-align: right;
+	gap: var(--db-spacing-fixed-xs);
+	text-align: end;
 }
 
 .connection-card__price {
-	color: var(--db-color-red-500);
-	font-size: 20px;
+	color: var(--db-brand-on-bg-basic-emphasis-80-default);
+	font: var(--db-type-body-xl);
 	font-weight: 700;
 	margin: 0;
 }
 
 .connection-card__price-label {
-	font-size: 14px;
-	font-weight: 400;
-	color: var(--db-color-cool-gray-600);
+	color: var(--db-adaptive-on-bg-basic-emphasis-80-default);
+	font: var(--db-type-body-sm);
 }
 
 @media (max-width: 640px) {
-	.connection-card .connection-card__layout {
+	.connection-card {
 		grid-template-columns: 1fr;
 	}
 
@@ -158,7 +140,7 @@
 		flex-direction: row;
 		align-items: center;
 		justify-content: space-between;
-		text-align: left;
+		text-align: start;
 	}
 }
 
@@ -167,67 +149,17 @@
 	flex-wrap: wrap;
 	align-items: center;
 	justify-content: space-between;
-	gap: 16px;
-	margin-top: 32px;
-}
-
-/* --- Search: submit and loading state --- */
-
-.search-form__submit {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	gap: 16px;
-}
-
-.search-form__status {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-	margin: 0;
-	font-size: 14px;
-}
-
-/* --- Fare comparison --- */
-
-.fare-table-wrapper {
-	overflow-x: auto;
-}
-
-.fare-table {
-	width: 100%;
-	min-width: 640px;
-	background-color: #fff;
-}
-
-/* --- Selection dialog --- */
-
-.selection-dialog {
-	width: 480px;
+	gap: var(--db-spacing-fixed-md);
+	margin-block-start: var(--db-spacing-fixed-xl);
 }
 
 /* --- Footer --- */
 
-.app-footer {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	justify-content: space-between;
-	gap: 12px 24px;
-	max-width: 960px;
-	margin: 0 auto;
-}
-
 .app-footer__links {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 8px 24px;
+	gap: var(--db-spacing-fixed-xs) var(--db-spacing-fixed-lg);
 	margin: 0;
 	padding: 0;
 	list-style: none;
-}
-
-.app-footer__copyright {
-	margin: 0;
-	font-size: 14px;
 }

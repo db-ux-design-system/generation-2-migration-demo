@@ -1,5 +1,33 @@
-import { DbButton, DbLink, DbTab, DbTabBar } from '@db-ui/react-elements';
-import { useEffect, useRef, useState } from 'react';
+import {
+	DBAccordion,
+	DBAccordionItem,
+	DBBreadcrumb,
+	DBBreadcrumbItem,
+	DBButton,
+	DBCard,
+	DBCheckbox,
+	DBDialog,
+	DBDialogFooter,
+	DBDialogHeader,
+	DBHeadingH1,
+	DBHeadingH2,
+	DBHeadingH3,
+	DBLink,
+	DBNotification,
+	DBSection,
+	DBTabItem,
+	DBTabList,
+	DBTabPanel,
+	DBTable,
+	DBTableBody,
+	DBTableDataCell,
+	DBTableHead,
+	DBTableHeaderCell,
+	DBTableRow,
+	DBTabs,
+	DBTag
+} from '@db-ux/react-core-components';
+import { useState } from 'react';
 import type { SearchRequest } from './SearchPage';
 
 const dateFormat = new Intl.DateTimeFormat('en-GB', {
@@ -42,59 +70,6 @@ const returnTrips: Connection[] = [
 	{ id: 'r2', departure: '18:04', arrival: '22:40', duration: '4 h 36 min', train: 'ICE 696', changes: 1, price: '27.99 €', status: 'on-time' }
 ];
 
-type ConnectionCardProps = {
-	connection: Connection;
-	onSelect: (connection: Connection) => void;
-};
-
-function ConnectionCard({ connection, onSelect }: ConnectionCardProps) {
-	const headingId = `connection-${connection.id}`;
-	return (
-		<div className="cmp-card connection-card">
-			<figure>
-				<figcaption className="connection-card__layout">
-					<div className="connection-card__details">
-						<h3 id={headingId} className="connection-card__times">
-							{connection.departure} – {connection.arrival}
-						</h3>
-						<p className="connection-card__meta">
-							{connection.duration} · {connection.changes === 0 ? 'direct' : `${connection.changes} change`}
-						</p>
-						<p className="connection-card__tags">
-							<span className="elm-tag" data-variant="informative" data-size="small">
-								{connection.train}
-							</span>
-							{connection.status === 'on-time' ? (
-								<span className="elm-tag" data-variant="success" data-size="small">
-									On time
-								</span>
-							) : (
-								<span className="elm-tag" data-variant="warning" data-size="small">
-									+5 min
-								</span>
-							)}
-						</p>
-					</div>
-					<div className="connection-card__offer">
-						<p className="connection-card__price">
-							<span className="connection-card__price-label">from</span> {connection.price}
-						</p>
-						<button
-							type="button"
-							className="elm-button"
-							data-variant="secondary-outline"
-							aria-describedby={headingId}
-							onClick={() => onSelect(connection)}
-						>
-							Select
-						</button>
-					</div>
-				</figcaption>
-			</figure>
-		</div>
-	);
-}
-
 type Fare = {
 	name: string;
 	price: string;
@@ -109,55 +84,87 @@ const fares: Fare[] = [
 	{ name: 'Flex', price: '89.90 €', trainBinding: 'Any train of the day', cancellation: 'Free until the day before', seat: 'Extra charge' }
 ];
 
+type ConnectionCardProps = {
+	connection: Connection;
+	onSelect: (connection: Connection) => void;
+};
+
+function ConnectionCard({ connection, onSelect }: ConnectionCardProps) {
+	const headingId = `connection-${connection.id}`;
+	return (
+		<DBCard>
+			{/* DBCard is a flex column. The two-column layout lives on an inner wrapper. */}
+			<div className="connection-card">
+				<div className="connection-card__details">
+					<DBHeadingH3 id={headingId} visualSize="h2">
+						{connection.departure} – {connection.arrival}
+					</DBHeadingH3>
+					<p className="connection-card__meta">
+						{connection.duration} · {connection.changes === 0 ? 'direct' : `${connection.changes} change`}
+					</p>
+					<p className="connection-card__tags">
+						<DBTag semantic="informational">{connection.train}</DBTag>
+						{connection.status === 'on-time' ? (
+							<DBTag semantic="successful">On time</DBTag>
+						) : (
+							<DBTag semantic="warning">+5 min</DBTag>
+						)}
+					</p>
+				</div>
+				<div className="connection-card__offer">
+					<p className="connection-card__price">
+						<span className="connection-card__price-label">from</span> {connection.price}
+					</p>
+					<DBButton variant="outlined" aria-describedby={headingId} onClick={() => onSelect(connection)}>
+						Select
+					</DBButton>
+				</div>
+			</div>
+		</DBCard>
+	);
+}
+
 /**
  Confirmation dialog for the selected connection.
 
- Uses the native <dialog> element with the Generation 2 dialog styles.
- showModal() traps focus and closes on Escape; the browser returns focus to
- the "Select" button on close.
+ Generation 2 opened a native <dialog> with showModal() in an effect.
+ DBDialog is controlled by the `open` prop and closes on Escape, on the
+ backdrop and with the close button of DBDialogHeader.
  */
 function SelectionDialog({ connection, onClose }: { connection?: Connection; onClose: () => void }) {
-	const dialogRef = useRef<HTMLDialogElement>(null);
-
-	useEffect(() => {
-		const dialog = dialogRef.current;
-		if (connection && dialog && !dialog.open) {
-			dialog.showModal();
-		}
-	}, [connection]);
-
 	return (
-		<dialog ref={dialogRef} className="cmp-dialog selection-dialog" aria-labelledby="selection-heading" onClose={onClose}>
-			<header>
-				<h2 id="selection-heading" className="elm-headline">
-					Your selection
-				</h2>
-				<button type="button" className="elm-button is-close" onClick={() => dialogRef.current?.close()}>
-					Close
-				</button>
-			</header>
-			<main>
-				{connection && (
-					<>
-						<p>
-							<strong>
-								{connection.departure} – {connection.arrival}
-							</strong>{' '}
-							· {connection.train} · {connection.duration}
-						</p>
-						<p>from {connection.price} per person. The final price depends on the fare you choose in the next step.</p>
-					</>
-				)}
-			</main>
-			<footer>
-				<button type="button" className="elm-button" data-variant="secondary-outline" onClick={() => dialogRef.current?.close()}>
-					Cancel
-				</button>
-				<button type="button" className="elm-button" data-variant="brand-primary" onClick={() => dialogRef.current?.close()}>
-					Continue
-				</button>
-			</footer>
-		</dialog>
+		<DBDialog
+			open={Boolean(connection)}
+			containerSize="small"
+			onClose={onClose}
+			header={
+				<DBDialogHeader closeButtonText="Close">
+					<DBHeadingH2 visualSize="h4">Your selection</DBHeadingH2>
+				</DBDialogHeader>
+			}
+			footer={
+				<DBDialogFooter>
+					<DBButton variant="outlined" onClick={onClose}>
+						Cancel
+					</DBButton>
+					<DBButton variant="brand" onClick={onClose}>
+						Continue
+					</DBButton>
+				</DBDialogFooter>
+			}
+		>
+			{connection && (
+				<>
+					<p>
+						<strong>
+							{connection.departure} – {connection.arrival}
+						</strong>{' '}
+						· {connection.train} · {connection.duration}
+					</p>
+					<p>from {connection.price} per person. The final price depends on the fare you choose in the next step.</p>
+				</>
+			)}
+		</DBDialog>
 	);
 }
 
@@ -165,112 +172,114 @@ export function ResultsPage({ request }: { request: SearchRequest }) {
 	const [selected, setSelected] = useState<Connection | undefined>();
 
 	return (
-		<section className="booking-section" aria-labelledby="results-heading">
-			<nav className="cmp-breadcrumb" aria-label="Breadcrumb">
-				<ol>
-					<li>
-						<a className="elm-link" href="#search">
-							Search
-						</a>
-					</li>
-					<li>
-						<a className="elm-link" href="#results" aria-current="page">
-							Connections
-						</a>
-					</li>
-				</ol>
-			</nav>
+		<DBSection width="medium" spacing="medium" aria-labelledby="results-heading">
+			<DBBreadcrumb aria-label="Breadcrumb">
+				<DBBreadcrumbItem>
+					<a href="#search">Search</a>
+				</DBBreadcrumbItem>
+				<DBBreadcrumbItem>
+					<a href="#results" aria-current="page">
+						Connections
+					</a>
+				</DBBreadcrumbItem>
+			</DBBreadcrumb>
 
-			<h1 id="results-heading" className="elm-headline" data-size="large">
+			<DBHeadingH1 id="results-heading">
 				{request.from} → {request.to}
-			</h1>
+			</DBHeadingH1>
 			<p className="results-summary">
 				{formatDate(request.date)} · {formatTravellers(request.passengers)} ·{' '}
 				{request.travelClass === '1' ? '1st' : '2nd'} class
 			</p>
 
-			{/* In-content notice: the "hovering" wrapper turns the full-width status bar into a framed box. */}
-			<section data-variant="hovering" className="results-notice">
-				<div className="cmp-notification" data-type="informative" data-icon="info" role="status">
-					<em>Information:</em> Construction work between Fulda and Erfurt. Plan 10 minutes extra.
-				</div>
-			</section>
+			{/* The framed in-content look of Generation 2 is the standalone variant. */}
+			<DBNotification semantic="informational" variant="standalone" className="results-notice">
+				Construction work between Fulda and Erfurt. Plan 10 minutes extra.
+			</DBNotification>
 
-			<div className="filter-chips" role="group" aria-label="Filter connections">
-				<input type="checkbox" className="elm-chip" id="filter-direct" />
-				<label htmlFor="filter-direct">Direct only</label>
-				<input type="checkbox" className="elm-chip" id="filter-ice" />
-				<label htmlFor="filter-ice">ICE only</label>
-				<input type="checkbox" className="elm-chip" id="filter-saver" />
-				<label htmlFor="filter-saver">Saver fares</label>
+			<div className="filter-tags" role="group" aria-label="Filter connections">
+				<DBTag showCheckState>
+					<DBCheckbox id="filter-direct">Direct only</DBCheckbox>
+				</DBTag>
+				<DBTag showCheckState>
+					<DBCheckbox id="filter-ice">ICE only</DBCheckbox>
+				</DBTag>
+				<DBTag showCheckState>
+					<DBCheckbox id="filter-saver">Saver fares</DBCheckbox>
+				</DBTag>
 			</div>
 
-			<DbTabBar>
-				<DbTab id="tab-outbound" name="direction" label="Outbound" active>
+			<DBTabs>
+				<DBTabList>
+					<DBTabItem>Outbound</DBTabItem>
+					<DBTabItem>Return</DBTabItem>
+				</DBTabList>
+				<DBTabPanel>
 					<div className="connection-list">
 						{outbound.map((connection) => (
 							<ConnectionCard key={connection.id} connection={connection} onSelect={setSelected} />
 						))}
 					</div>
-				</DbTab>
-				<DbTab id="tab-return" name="direction" label="Return">
+				</DBTabPanel>
+				<DBTabPanel>
 					<div className="connection-list">
 						{returnTrips.map((connection) => (
 							<ConnectionCard key={connection.id} connection={connection} onSelect={setSelected} />
 						))}
 					</div>
-				</DbTab>
-			</DbTabBar>
+				</DBTabPanel>
+			</DBTabs>
 
-			<h2 className="results-subheading">Compare fares</h2>
-			<div className="fare-table-wrapper">
-				<table className="cmp-table fare-table" data-border="horizontal">
-					<caption>Fares for {request.travelClass === '1' ? '1st' : '2nd'} class, price per person</caption>
-					<thead>
-						<tr>
-							<th scope="col">Fare</th>
-							<th scope="col" data-align="right">
-								Price from
-							</th>
-							<th scope="col">Train binding</th>
-							<th scope="col">Cancellation</th>
-							<th scope="col">Seat reservation</th>
-						</tr>
-					</thead>
-					<tbody>
-						{fares.map((fare) => (
-							<tr key={fare.name}>
-								<th scope="row">{fare.name}</th>
-								<td data-align="right">{fare.price}</td>
-								<td>{fare.trainBinding}</td>
-								<td>{fare.cancellation}</td>
-								<td>{fare.seat}</td>
-							</tr>
-						))}
-					</tbody>
-				</table>
-			</div>
+			<DBHeadingH2 visualSize="h3" className="results-subheading">
+				Compare fares
+			</DBHeadingH2>
+			<DBTable captionPlain={`Fares for ${request.travelClass === '1' ? '1st' : '2nd'} class, price per person`}>
+				<DBTableHead>
+					<DBTableRow>
+						<DBTableHeaderCell scope="col">Fare</DBTableHeaderCell>
+						<DBTableHeaderCell scope="col" horizontalAlignment="end">
+							Price from
+						</DBTableHeaderCell>
+						<DBTableHeaderCell scope="col">Train binding</DBTableHeaderCell>
+						<DBTableHeaderCell scope="col">Cancellation</DBTableHeaderCell>
+						<DBTableHeaderCell scope="col">Seat reservation</DBTableHeaderCell>
+					</DBTableRow>
+				</DBTableHead>
+				<DBTableBody>
+					{fares.map((fare) => (
+						<DBTableRow key={fare.name}>
+							<DBTableHeaderCell scope="row">{fare.name}</DBTableHeaderCell>
+							<DBTableDataCell horizontalAlignment="end">{fare.price}</DBTableDataCell>
+							<DBTableDataCell>{fare.trainBinding}</DBTableDataCell>
+							<DBTableDataCell>{fare.cancellation}</DBTableDataCell>
+							<DBTableDataCell>{fare.seat}</DBTableDataCell>
+						</DBTableRow>
+					))}
+				</DBTableBody>
+			</DBTable>
 
-			<h2 className="results-subheading">Good to know</h2>
-			<details className="cmp-accordion">
-				<summary>Travelling with children</summary>
-				<p>Children under 6 travel free. Children from 6 to 14 travel free with a parent or grandparent if they are listed on the ticket.</p>
-			</details>
-			<details className="cmp-accordion">
-				<summary>Bike transport</summary>
-				<p>Bike spaces are limited. Reserve a space together with your ticket.</p>
-			</details>
+			<DBHeadingH2 visualSize="h3" className="results-subheading">
+				Good to know
+			</DBHeadingH2>
+			<DBAccordion>
+				<DBAccordionItem headlinePlain="Travelling with children">
+					Children under 6 travel free. Children from 6 to 14 travel free with a parent or grandparent if they are
+					listed on the ticket.
+				</DBAccordionItem>
+				<DBAccordionItem headlinePlain="Bike transport">
+					Bike spaces are limited. Reserve a space together with your ticket.
+				</DBAccordionItem>
+			</DBAccordion>
 
 			<p className="results-actions">
-				<DbLink href="#search" icon="edit">
-					Change search
-				</DbLink>
-				<DbButton type="button" variant="secondary-solid" iconafter="arrow-forward">
+				{/* Generation 2 showed a pen icon here. The Link has no icon props in Generation 3. */}
+				<DBLink href="#search">Change search</DBLink>
+				<DBButton variant="filled" iconTrailing="arrow_right">
 					Later connections
-				</DbButton>
+				</DBButton>
 			</p>
 
 			<SelectionDialog connection={selected} onClose={() => setSelected(undefined)} />
-		</section>
+		</DBSection>
 	);
 }

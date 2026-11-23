@@ -14,8 +14,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@db-ui/core": "3.3.7",
-    "@db-ui/react-elements": "0.33.2",
+    "@db-ux/db-theme": "7.3.1",
+    "@db-ux/react-core-components": "6.4.1",
     "react": "19.3.1",
     "react-dom": "19.3.1"
   },
@@ -26,5 +26,10 @@
     "@vitejs/plugin-react": "6.3.0",
     "typescript": "7.0.2",
     "vite": "8.3.8"
+  },
+  "allowScripts": {
+    "@db-ux/db-theme@7.3.1": true,
+    "@db-ux/db-theme-fonts@2.2.0": true,
+    "@db-ux/db-theme-icons@4.5.1": true
   }
 }

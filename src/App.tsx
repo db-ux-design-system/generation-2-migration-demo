@@ -1,5 +1,18 @@
-import { useEffect, useState } from 'react';
-import logo from '@db-ui/core/dist/images/db_logo.svg';
+import {
+	DBControlPanelBrand,
+	DBControlPanelDesktop,
+	DBControlPanelMeta,
+	DBControlPanelMobile,
+	DBControlPanelNavigation,
+	DBControlPanelNavigationItem,
+	DBFooter,
+	DBFooterContent,
+	DBFooterMeta,
+	DBLink,
+	DBShell,
+	DBShellContent
+} from '@db-ux/react-core-components';
+import { useEffect, useState, type ReactNode } from 'react';
 import { ResultsPage } from './ResultsPage';
 import { SearchPage, type SearchRequest } from './SearchPage';
 
@@ -18,6 +31,33 @@ function pageFromHash(): Page {
 	return globalThis.location.hash === '#results' ? 'results' : 'search';
 }
 
+/** Navigation, brand and meta are shared by the desktop and the mobile Control Panel. */
+function navigation(page: Page): ReactNode {
+	return (
+		<DBControlPanelNavigation aria-label="Main navigation">
+			<DBControlPanelNavigationItem icon="magnifying_glass" active={page === 'search'} tooltip="Search">
+				<a href="#search" aria-current={page === 'search' ? 'page' : undefined}>
+					Search
+				</a>
+			</DBControlPanelNavigationItem>
+			<DBControlPanelNavigationItem icon="timetable" active={page === 'results'} tooltip="Connections">
+				<a href="#results" aria-current={page === 'results' ? 'page' : undefined}>
+					Connections
+				</a>
+			</DBControlPanelNavigationItem>
+		</DBControlPanelNavigation>
+	);
+}
+
+const brand = <DBControlPanelBrand>Booking</DBControlPanelBrand>;
+
+const meta = (
+	<DBControlPanelMeta>
+		{/* Generation 2 showed a person icon here. The Link has no icon props in Generation 3. */}
+		<DBLink href="#search">Log in</DBLink>
+	</DBControlPanelMeta>
+);
+
 export function App() {
 	const [page, setPage] = useState<Page>(pageFromHash);
 	const [request, setRequest] = useState<SearchRequest>(defaultRequest);
@@ -34,75 +74,45 @@ export function App() {
 	}
 
 	return (
-		<>
-			<header className="rea-header">
-				<div className="cmp-brand">
-					<a href="#search" title="Booking home">
-						<img src={logo} alt="DB" className="elm-image is-logo" />
-					</a>
-					<span className="is-site-name">Booking</span>
-				</div>
-				<nav className="cmp-mainnavigation" aria-label="Main navigation">
-					<input type="checkbox" id="toggle_mainnavigation" />
-					<label htmlFor="toggle_mainnavigation" title="Toggle main navigation" className="is-site-name">
-						Booking
-					</label>
-					<ul>
-						<li>
-							<a className="elm-link" href="#search" aria-current={page === 'search' ? 'page' : undefined}>
-								Search
-							</a>
-						</li>
-						<li>
-							<a className="elm-link" href="#results" aria-current={page === 'results' ? 'page' : undefined}>
-								Connections
-							</a>
-						</li>
-					</ul>
-				</nav>
-				<div className="rea-meta">
-					<a className="elm-link" href="#search" data-icon="account">
-						Log in
-					</a>
-				</div>
-			</header>
-
-			<main className="rea-main">
+		<DBShell controlPanelDesktopPosition="top">
+			<DBControlPanelDesktop brand={brand} meta={meta}>
+				{navigation(page)}
+			</DBControlPanelDesktop>
+			<DBControlPanelMobile brand={brand} meta={meta} drawerHeaderText="Booking" burgerMenuLabel="Open menu">
+				{navigation(page)}
+			</DBControlPanelMobile>
+			<DBShellContent
+				endSlot={
+					<DBFooter width="medium">
+						{/* Placeholder links: prevent "#" from resetting the page switch to the search page. */}
+						<DBFooterContent>
+							<nav className="app-footer" aria-label="Legal" onClick={(event) => event.preventDefault()}>
+								<ul className="app-footer__links">
+									<li>
+										<DBLink href="#">Imprint</DBLink>
+									</li>
+									<li>
+										<DBLink href="#">Privacy</DBLink>
+									</li>
+									<li>
+										<DBLink href="#">Terms of transport</DBLink>
+									</li>
+									<li>
+										<DBLink href="#">Accessibility statement</DBLink>
+									</li>
+								</ul>
+							</nav>
+						</DBFooterContent>
+						<DBFooterMeta copyright="2026 Deutsche Bahn AG" />
+					</DBFooter>
+				}
+			>
 				{page === 'search' ? (
 					<SearchPage initial={request} onSearch={handleSearch} />
 				) : (
 					<ResultsPage request={request} />
 				)}
-			</main>
-
-			<footer className="rea-footer has-border">
-				{/* Placeholder links: prevent "#" from resetting the page switch to the search page. */}
-				<nav className="app-footer" aria-label="Legal" onClick={(event) => event.preventDefault()}>
-					<ul className="app-footer__links">
-						<li>
-							<a className="elm-link" href="#">
-								Imprint
-							</a>
-						</li>
-						<li>
-							<a className="elm-link" href="#">
-								Privacy
-							</a>
-						</li>
-						<li>
-							<a className="elm-link" href="#">
-								Terms of transport
-							</a>
-						</li>
-						<li>
-							<a className="elm-link" href="#">
-								Accessibility statement
-							</a>
-						</li>
-					</ul>
-					<p className="app-footer__copyright">© 2026 Deutsche Bahn AG</p>
-				</nav>
-			</footer>
-		</>
+			</DBShellContent>
+		</DBShell>
 	);
 }
