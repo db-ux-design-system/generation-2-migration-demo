@@ -86,14 +86,30 @@
 	padding-top: 16px;
 }
 
+.results-notice {
+	margin-bottom: 8px;
+}
+
 .connection-card {
 	background-color: #fff;
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
 	border-radius: 8px;
 }
 
 .connection-card:hover {
-	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+}
+
+/* Connection details on the left, price and selection on the right. */
+.connection-card .connection-card__layout {
+	display: grid;
+	grid-template-columns: 1fr auto;
+	align-items: center;
+	gap: 16px 24px;
+	padding: 4px 8px;
+	/* @db-ui/core limits the card caption to 60ch, too narrow for this two-column layout. */
+	max-width: none;
+	box-sizing: border-box;
 }
 
 .connection-card__times {
@@ -109,14 +125,41 @@
 .connection-card__tags {
 	display: flex;
 	gap: 8px;
-	margin: 0 0 8px;
+	margin: 0;
+}
+
+.connection-card__offer {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: 8px;
+	text-align: right;
 }
 
 .connection-card__price {
 	color: var(--db-color-red-500);
-	font-size: 18px;
+	font-size: 20px;
 	font-weight: 700;
-	margin: 0 0 12px;
+	margin: 0;
+}
+
+.connection-card__price-label {
+	font-size: 14px;
+	font-weight: 400;
+	color: var(--db-color-cool-gray-600);
+}
+
+@media (max-width: 640px) {
+	.connection-card .connection-card__layout {
+		grid-template-columns: 1fr;
+	}
+
+	.connection-card__offer {
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		text-align: left;
+	}
 }
 
 .results-actions {
@@ -128,27 +171,63 @@
 	margin-top: 32px;
 }
 
-/* --- Demo-only: migration hints, not part of the booking app --- */
+/* --- Search: submit and loading state --- */
 
-.migration-hint {
-	margin: 8px 0 16px;
+.search-form__submit {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 16px;
 }
 
-.migration-hint__panel {
-	max-width: 60ch;
-	margin-top: 4px;
-	padding: 12px 16px;
-	border: 2px dashed var(--db-color-blue-500);
-	border-radius: 4px;
-	background-color: var(--db-color-blue-100);
-	color: var(--db-color-cool-gray-800);
+.search-form__status {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin: 0;
+	font-size: 14px;
 }
 
-.visually-hidden {
-	position: absolute;
-	width: 1px;
-	height: 1px;
-	overflow: hidden;
-	clip-path: inset(50%);
-	white-space: nowrap;
+/* --- Fare comparison --- */
+
+.fare-table-wrapper {
+	overflow-x: auto;
+}
+
+.fare-table {
+	width: 100%;
+	min-width: 640px;
+	background-color: #fff;
+}
+
+/* --- Selection dialog --- */
+
+.selection-dialog {
+	width: 480px;
+}
+
+/* --- Footer --- */
+
+.app-footer {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px 24px;
+	max-width: 960px;
+	margin: 0 auto;
+}
+
+.app-footer__links {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px 24px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.app-footer__copyright {
+	margin: 0;
+	font-size: 14px;
 }

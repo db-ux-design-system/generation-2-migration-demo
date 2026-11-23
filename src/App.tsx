@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import logo from '@db-ui/core/dist/images/db_logo.svg';
-import { MigrationHint } from './MigrationHint';
 import { ResultsPage } from './ResultsPage';
 import { SearchPage, type SearchRequest } from './SearchPage';
 
@@ -69,13 +68,41 @@ export function App() {
 			</header>
 
 			<main className="rea-main">
-				<MigrationHint id="header" />
 				{page === 'search' ? (
 					<SearchPage initial={request} onSearch={handleSearch} />
 				) : (
 					<ResultsPage request={request} />
 				)}
 			</main>
+
+			<footer className="rea-footer has-border">
+				{/* Placeholder links: prevent "#" from resetting the page switch to the search page. */}
+				<nav className="app-footer" aria-label="Legal" onClick={(event) => event.preventDefault()}>
+					<ul className="app-footer__links">
+						<li>
+							<a className="elm-link" href="#">
+								Imprint
+							</a>
+						</li>
+						<li>
+							<a className="elm-link" href="#">
+								Privacy
+							</a>
+						</li>
+						<li>
+							<a className="elm-link" href="#">
+								Terms of transport
+							</a>
+						</li>
+						<li>
+							<a className="elm-link" href="#">
+								Accessibility statement
+							</a>
+						</li>
+					</ul>
+					<p className="app-footer__copyright">© 2026 Deutsche Bahn AG</p>
+				</nav>
+			</footer>
 		</>
 	);
 }

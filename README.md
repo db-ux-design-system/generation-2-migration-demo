@@ -7,17 +7,15 @@ A small train booking app built with **DB UX Design System – Generation 2 (aka
 
 ## What's inside
 
-Two pages, seven source files:
+Two pages, five source files:
 
 | File                     | Content                                                                                        |
 | ------------------------ | ---------------------------------------------------------------------------------------------- |
-| `src/App.tsx`            | Header with brand, main navigation and meta link, page switch via URL hash                     |
-| `src/SearchPage.tsx`     | Search form: inputs, select, radios, checkbox, toggle, textarea, buttons                       |
-| `src/ResultsPage.tsx`    | Results: breadcrumb, notification, filter chips, tabs, cards, tags, accordion, link            |
+| `src/App.tsx`            | Header with brand, main navigation and meta link, footer, page switch via URL hash             |
+| `src/SearchPage.tsx`     | Search form: inputs, select, radios, checkbox, toggle, textarea, buttons, loading state        |
+| `src/ResultsPage.tsx`    | Results: breadcrumb, notification, chips, tabs, cards, tags, fare table, dialog, accordion     |
 | `src/styles.css`         | App styles with hard-coded values, old color tokens, `box-shadow` and `opacity`                |
 | `src/main.tsx`           | Entry point, loads the Generation 2 CSS                                                        |
-| `src/MigrationHint.tsx`  | Demo-only "Migration hint" button that explains the pitfall next to it                         |
-| `src/hints.ts`           | Texts for the hints. Written in plain words, so the scanner does not report this file          |
 
 The code mixes both ways Generation 2 was used in real projects:
 
@@ -28,7 +26,7 @@ Screenshots of the Generation 2 state: [search](docs/screenshots/generation-2-se
 
 ## Pitfalls built into the demo
 
-Every pitfall has a **Migration hint** button next to it in the app.
+The app code contains no hints, so you migrate it like a real project. [docs/pitfalls.md](docs/pitfalls.md) lists every pitfall with the file and the place in the code. Use it as a checklist after the migration.
 
 | Pitfall                                     | Why it needs your attention                                                                         |
 | ------------------------------------------- | --------------------------------------------------------------------------------------------------- |
@@ -39,6 +37,7 @@ Every pitfall has a **Migration hint** button next to it in the app.
 | Old icon names                              | Many icons are renamed, for example `search` → `magnifying_glass`                                   |
 | Custom CSS and inline styles                | Pixel values, old color tokens, `box-shadow` and `opacity` bypass theming, Density and Dark Mode    |
 | Breadcrumb, notification, chips, tabs       | Different component structure or props in Generation 3                                              |
+| Table, dialog, loading state, footer        | New structure with subcomponents, dialog behavior and focus, screen reader announcements            |
 | Cards and accordion                         | Content moves into children, each disclosure becomes an Accordion Item                              |
 
 ## Prerequisites
@@ -122,7 +121,7 @@ npm run build
 npm run dev
 ```
 
-Open the migration hints again: each one names what should have changed.
+Go through [docs/pitfalls.md](docs/pitfalls.md) and check each entry against your code. The scanner does not report hard-coded values and props yet, so these need your own review.
 
 ### 7. Compare with the reference
 

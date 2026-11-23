@@ -1,6 +1,8 @@
 import { DbButton, DbCheckbox, DbInput, DbRadio, DbToggle } from '@db-ui/react-elements';
-import type { FormEvent } from 'react';
-import { MigrationHint } from './MigrationHint';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
+
+/** Simulated response time of the connection search. */
+const SEARCH_DELAY_MS = 1200;
 
 export type SearchRequest = {
 	from: string;
@@ -25,17 +27,29 @@ function swapStations() {
 }
 
 export function SearchPage({ initial, onSearch }: SearchPageProps) {
+	const [isSearching, setIsSearching] = useState(false);
+	const timeoutRef = useRef<number | undefined>(undefined);
+
+	useEffect(() => () => globalThis.clearTimeout(timeoutRef.current), []);
+
 	function handleSubmit(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault();
+		if (isSearching) {
+			return;
+		}
+
 		// @db-ui/elements renders without Shadow DOM, so the native inputs take part in the form.
 		const data = new FormData(event.currentTarget);
-		onSearch({
+		const request: SearchRequest = {
 			from: String(data.get('from') ?? ''),
 			to: String(data.get('to') ?? ''),
 			date: String(data.get('date') ?? ''),
 			passengers: String(data.get('passengers') ?? '1'),
 			travelClass: data.get('class') === '1' ? '1' : '2'
-		});
+		};
+
+		setIsSearching(true);
+		timeoutRef.current = globalThis.setTimeout(() => onSearch(request), SEARCH_DELAY_MS);
 	}
 
 	return (
@@ -46,7 +60,6 @@ export function SearchPage({ initial, onSearch }: SearchPageProps) {
 			<p style={{ color: 'var(--db-color-cool-gray-500)', fontSize: '14px', marginBottom: '24px' }}>
 				Fields marked with * are required.
 			</p>
-			<MigrationHint id="customCss" />
 
 			<form className="search-form" onSubmit={handleSubmit}>
 				<fieldset className="search-form__stations">
@@ -78,7 +91,6 @@ export function SearchPage({ initial, onSearch }: SearchPageProps) {
 						required
 					/>
 				</fieldset>
-				<MigrationHint id="formFields" />
 
 				<div className="search-form__row">
 					<DbInput input_id="date" name="date" type="date" label="Date *" value={initial.date} required />
@@ -116,11 +128,22 @@ export function SearchPage({ initial, onSearch }: SearchPageProps) {
 					<textarea className="elm-textarea" id="notes" name="notes" rows={3} />
 				</div>
 
-				<DbButton type="submit" variant="brand-primary" size="large" icon="search">
-					Search
-				</DbButton>
-				<MigrationHint id="button" />
-				<MigrationHint id="icons" />
+				<div className="search-form__submit">
+					<DbButton type="submit" variant="brand-primary" size="large" icon="search" disabled={isSearching}>
+						Search
+					</DbButton>
+					{/* The spinner itself is silent; the status text next to it is announced. */}
+					<p className="search-form__status" role="status">
+						{isSearching && (
+							<>
+								<svg className="elm-loadingindicator" data-size="s" viewBox="0 0 44 44" aria-hidden="true">
+									<circle className="elm-loadingindicator__circle" cx="22" cy="22" fill="none" />
+								</svg>
+								Searching for connections…
+							</>
+						)}
+					</p>
+				</div>
 			</form>
 		</section>
 	);
