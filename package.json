@@ -1,0 +1,30 @@
+{
+  "name": "generation-2-migration-demo",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Booking demo built with DB UX Design System – Generation 2 (aka DB UI), to be migrated to Generation 3 with the DB UX MCP Server",
+  "license": "Apache-2.0",
+  "type": "module",
+  "engines": {
+    "node": ">=26"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@db-ui/core": "3.3.7",
+    "@db-ui/react-elements": "0.33.2",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.6",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.3.0",
+    "typescript": "7.0.2",
+    "vite": "8.3.8"
+  }
+}

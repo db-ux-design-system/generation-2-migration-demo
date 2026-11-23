@@ -1,0 +1,10 @@
+{
+	"servers": {
+		"db-ux": {
+			"type": "stdio",
+			"command": "npx",
+			"args": ["--yes", "@db-ux/mcp-server"],
+			"cwd": "${workspaceFolder}"
+		}
+	}
+}
