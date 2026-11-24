@@ -25,6 +25,7 @@ import {
 	DBTableHeaderCell,
 	DBTableRow,
 	DBTabs,
+	DBSelect,
 	DBTag
 } from '@db-ux/react-core-components';
 import { useState } from 'react';
@@ -82,6 +83,25 @@ const fares: Fare[] = [
 	{ name: 'Super Saver', price: '17.99 €', trainBinding: 'Selected train only', cancellation: 'Not possible', seat: 'Extra charge' },
 	{ name: 'Saver', price: '29.99 €', trainBinding: 'Selected train only', cancellation: 'Voucher, 10 € fee', seat: 'Extra charge' },
 	{ name: 'Flex', price: '89.90 €', trainBinding: 'Any train of the day', cancellation: 'Free until the day before', seat: 'Extra charge' }
+];
+
+type SortOrder = 'departure' | 'duration' | 'price';
+
+/** Sorts a copy of the connections. Times, durations and prices have fixed formats, so text comparison works. */
+function sortConnections(connections: Connection[], order: SortOrder): Connection[] {
+	const key = (connection: Connection) =>
+		order === 'price'
+			? connection.price.padStart(8, '0')
+			: order === 'duration'
+				? connection.duration
+				: connection.departure;
+	return [...connections].sort((a, b) => key(a).localeCompare(key(b)));
+}
+
+const filters = [
+	{ id: 'filter-direct', label: 'Direct only' },
+	{ id: 'filter-ice', label: 'ICE only' },
+	{ id: 'filter-saver', label: 'Saver fares' }
 ];
 
 type ConnectionCardProps = {
@@ -170,6 +190,13 @@ function SelectionDialog({ connection, onClose }: { connection?: Connection; onC
 
 export function ResultsPage({ request }: { request: SearchRequest }) {
 	const [selected, setSelected] = useState<Connection | undefined>();
+	const [sortOrder, setSortOrder] = useState<SortOrder>('departure');
+	// Generation 2 unchecked the chips through the DOM. With components the state lives in React.
+	const [activeFilters, setActiveFilters] = useState<string[]>([]);
+
+	function toggleFilter(id: string, isChecked: boolean) {
+		setActiveFilters((current) => (isChecked ? [...current, id] : current.filter((filter) => filter !== id)));
+	}
 
 	return (
 		<DBSection width="medium" spacing="medium" aria-labelledby="results-heading">
@@ -198,15 +225,41 @@ export function ResultsPage({ request }: { request: SearchRequest }) {
 			</DBNotification>
 
 			<div className="filter-tags" role="group" aria-label="Filter connections">
-				<DBTag showCheckState>
-					<DBCheckbox id="filter-direct">Direct only</DBCheckbox>
-				</DBTag>
-				<DBTag showCheckState>
-					<DBCheckbox id="filter-ice">ICE only</DBCheckbox>
-				</DBTag>
-				<DBTag showCheckState>
-					<DBCheckbox id="filter-saver">Saver fares</DBCheckbox>
-				</DBTag>
+				{filters.map((filter) => (
+					<DBTag key={filter.id} showCheckState>
+						<DBCheckbox
+							id={filter.id}
+							checked={activeFilters.includes(filter.id)}
+							onChange={(event) => toggleFilter(filter.id, event.target.checked)}
+						>
+							{filter.label}
+						</DBCheckbox>
+					</DBTag>
+				))}
+				{/* Self-built ActionButton, variant ghost. */}
+				<DBButton
+					variant="ghost"
+					size="small"
+					disabled={activeFilters.length === 0}
+					onClick={() => setActiveFilters([])}
+				>
+					Reset filters
+				</DBButton>
+			</div>
+
+			{/* Self-built DropdownSelect: a div with onClick and a list, without role, label or keyboard support. */}
+			<div className="results-toolbar">
+				<DBSelect
+					id="sort"
+					name="sort"
+					label="Sort by"
+					value={sortOrder}
+					onChange={(event) => setSortOrder(event.target.value as SortOrder)}
+				>
+					<option value="departure">Departure</option>
+					<option value="duration">Travel time</option>
+					<option value="price">Price</option>
+				</DBSelect>
 			</div>
 
 			<DBTabs>
@@ -216,14 +269,14 @@ export function ResultsPage({ request }: { request: SearchRequest }) {
 				</DBTabList>
 				<DBTabPanel>
 					<div className="connection-list">
-						{outbound.map((connection) => (
+						{sortConnections(outbound, sortOrder).map((connection) => (
 							<ConnectionCard key={connection.id} connection={connection} onSelect={setSelected} />
 						))}
 					</div>
 				</DBTabPanel>
 				<DBTabPanel>
 					<div className="connection-list">
-						{returnTrips.map((connection) => (
+						{sortConnections(returnTrips, sortOrder).map((connection) => (
 							<ConnectionCard key={connection.id} connection={connection} onSelect={setSelected} />
 						))}
 					</div>

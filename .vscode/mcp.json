@@ -5,6 +5,17 @@
 			"command": "npx",
 			"args": ["--yes", "@db-ux/mcp-server"],
 			"cwd": "${workspaceFolder}"
+		},
+		"chrome-devtools": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"--yes",
+				"chrome-devtools-mcp@1.13.0",
+				"--isolated",
+				"--no-usage-statistics",
+				"--no-performance-crux"
+			]
 		}
 	}
 }

@@ -1,0 +1,22 @@
+{
+	"mcpServers": {
+		"db-ux": {
+			"type": "stdio",
+			"command": "npx",
+			"args": ["--yes", "@db-ux/mcp-server"],
+			"tools": ["*"]
+		},
+		"chrome-devtools": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"--yes",
+				"chrome-devtools-mcp@1.13.0",
+				"--isolated",
+				"--no-usage-statistics",
+				"--no-performance-crux"
+			],
+			"tools": ["*"]
+		}
+	}
+}

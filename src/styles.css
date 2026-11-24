@@ -82,6 +82,7 @@
 .filter-tags {
 	display: flex;
 	flex-wrap: wrap;
+	align-items: center;
 	gap: var(--db-spacing-fixed-xs);
 	margin-block: var(--db-spacing-fixed-lg) var(--db-spacing-fixed-xs);
 }
@@ -162,4 +163,68 @@
 	margin: 0;
 	padding: 0;
 	list-style: none;
+}
+
+/* --- Search: popular connections --- */
+
+.popular-connections {
+	margin-block-start: var(--db-spacing-fixed-2xl);
+}
+
+.popular-connections__heading {
+	margin-block-end: var(--db-spacing-fixed-md);
+}
+
+.popular-connections__list {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+	gap: var(--db-spacing-fixed-md);
+}
+
+/* DBCard with spacing="none": the image runs to the edge, body and footer get their own padding. */
+.offer-card {
+	overflow: hidden;
+}
+
+.offer-card__image {
+	display: block;
+	inline-size: 100%;
+	block-size: 7.5rem;
+	object-fit: cover;
+}
+
+.offer-card__body {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: var(--db-spacing-fixed-xs);
+	padding: var(--db-spacing-fixed-md) var(--db-spacing-fixed-md) var(--db-spacing-fixed-xs);
+}
+
+.offer-card__text {
+	margin: 0;
+	color: var(--db-adaptive-on-bg-basic-emphasis-80-default);
+	font: var(--db-type-body-sm);
+}
+
+.offer-card__footer {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--db-spacing-fixed-sm);
+	margin-block-start: auto;
+	padding: var(--db-spacing-fixed-xs) var(--db-spacing-fixed-md) var(--db-spacing-fixed-md);
+}
+
+.offer-card__price {
+	color: var(--db-brand-on-bg-basic-emphasis-80-default);
+	font-weight: 700;
+}
+
+/* --- Results: sorting --- */
+
+.results-toolbar {
+	display: flex;
+	justify-content: flex-end;
+	margin-block: var(--db-spacing-fixed-xs);
 }

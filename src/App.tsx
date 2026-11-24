@@ -6,7 +6,6 @@ import {
 	DBControlPanelNavigation,
 	DBControlPanelNavigationItem,
 	DBFooter,
-	DBFooterContent,
 	DBFooterMeta,
 	DBLink,
 	DBShell,
@@ -84,8 +83,9 @@ export function App() {
 			<DBShellContent
 				endSlot={
 					<DBFooter width="medium">
-						{/* Placeholder links: prevent "#" from resetting the page switch to the search page. */}
-						<DBFooterContent>
+						{/* Legal links and the copyright notice belong into Footer Meta. */}
+						<DBFooterMeta copyright="2026 Deutsche Bahn AG">
+							{/* Placeholder links: prevent "#" from resetting the page switch to the search page. */}
 							<nav className="app-footer" aria-label="Legal" onClick={(event) => event.preventDefault()}>
 								<ul className="app-footer__links">
 									<li>
@@ -102,8 +102,7 @@ export function App() {
 									</li>
 								</ul>
 							</nav>
-						</DBFooterContent>
-						<DBFooterMeta copyright="2026 Deutsche Bahn AG" />
+						</DBFooterMeta>
 					</DBFooter>
 				}
 			>

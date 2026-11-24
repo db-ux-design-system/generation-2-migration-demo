@@ -1,7 +1,11 @@
 import {
+	DBBadge,
 	DBButton,
+	DBCard,
 	DBCheckbox,
 	DBHeadingH1,
+	DBHeadingH2,
+	DBHeadingH3,
 	DBInput,
 	DBLoadingIndicator,
 	DBRadio,
@@ -11,6 +15,9 @@ import {
 	DBTextarea
 } from '@db-ux/react-core-components';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
+import cologne from './assets/offers/cologne.svg';
+import hamburg from './assets/offers/hamburg.svg';
+import munich from './assets/offers/munich.svg';
 
 /** Simulated response time of the connection search. */
 const SEARCH_DELAY_MS = 1200;
@@ -22,6 +29,14 @@ export type SearchRequest = {
 	passengers: string;
 	travelClass: '1' | '2';
 };
+
+type PopularConnection = { to: string; image: string; text: string; price: string; badge?: string };
+
+const popularConnections: PopularConnection[] = [
+	{ to: 'Hamburg Hbf', image: hamburg, text: 'Direct ICE every hour, about 3 h 40 min.', price: '19.99 €', badge: 'Saver fare' },
+	{ to: 'München Hbf', image: munich, text: 'Fast connection via Nuremberg, about 3 h 15 min.', price: '29.99 €' },
+	{ to: 'Köln Hbf', image: cologne, text: 'High-speed line, about 1 h 05 min.', price: '17.99 €', badge: 'Popular' }
+];
 
 type SearchPageProps = {
 	initial: SearchRequest;
@@ -158,6 +173,41 @@ export function SearchPage({ initial, onSearch }: SearchPageProps) {
 					)}
 				</div>
 			</form>
+
+			<section className="popular-connections" aria-labelledby="popular-heading">
+				<DBHeadingH2 id="popular-heading" visualSize="h3" className="popular-connections__heading">
+					Popular connections from {from}
+				</DBHeadingH2>
+				<div className="popular-connections__list">
+					{/* Self-built OfferCard: DBCard with the image in the content, DBBadge and DBButton. */}
+					{popularConnections.map((connection) => (
+						<DBCard key={connection.to} spacing="none" className="offer-card">
+							<img className="offer-card__image" src={connection.image} alt="" />
+							<div className="offer-card__body">
+								{connection.badge && (
+									<DBBadge semantic="successful" emphasis="strong">
+										{connection.badge}
+									</DBBadge>
+								)}
+								<DBHeadingH3 visualSize="h5">{connection.to}</DBHeadingH3>
+								<p className="offer-card__text">{connection.text}</p>
+							</div>
+							<div className="offer-card__footer">
+								<span className="offer-card__price">from {connection.price}</span>
+								{/* Self-built ActionButton: secondary becomes outlined, size sm becomes small. */}
+								<DBButton
+									variant="outlined"
+									size="small"
+									iconTrailing="arrow_right"
+									onClick={() => onSearch({ from, to: connection.to, date, passengers, travelClass })}
+								>
+									Show trains
+								</DBButton>
+							</div>
+						</DBCard>
+					))}
+				</div>
+			</section>
 		</DBSection>
 	);
 }
