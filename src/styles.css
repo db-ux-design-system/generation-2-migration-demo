@@ -66,6 +66,13 @@
 	gap: var(--db-spacing-fixed-md);
 }
 
+.search-form__status {
+	display: flex;
+	align-items: center;
+	gap: var(--db-spacing-fixed-xs);
+	font: var(--db-type-body-sm);
+}
+
 @media (max-width: 640px) {
 	.search-form__stations,
 	.search-form__row {
@@ -102,7 +109,8 @@
 }
 
 .connection-card__meta {
-	color: var(--db-adaptive-on-bg-basic-emphasis-70-default);
+	/* emphasis-70 reaches only 4.49:1 on the card background; 80 meets the 4.5:1 minimum. */
+	color: var(--db-adaptive-on-bg-basic-emphasis-80-default);
 	margin-block: var(--db-spacing-fixed-2xs) var(--db-spacing-fixed-xs);
 }
 

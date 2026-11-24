@@ -11,7 +11,6 @@ import {
 	DBDialogHeader,
 	DBHeadingH1,
 	DBHeadingH2,
-	DBHeadingH3,
 	DBLink,
 	DBNotification,
 	DBSection,
@@ -116,20 +115,22 @@ function ConnectionCard({ connection, onSelect }: ConnectionCardProps) {
 			{/* DBCard is a flex column. The two-column layout lives on an inner wrapper. */}
 			<div className="connection-card">
 				<div className="connection-card__details">
-					<DBHeadingH3 id={headingId} visualSize="h2">
+					{/* h2, not h3 as in Generation 2: the cards follow the h1 directly, so h3 would skip a level. */}
+					<DBHeadingH2 id={headingId} visualSize="h2">
 						{connection.departure} – {connection.arrival}
-					</DBHeadingH3>
+					</DBHeadingH2>
 					<p className="connection-card__meta">
 						{connection.duration} · {connection.changes === 0 ? 'direct' : `${connection.changes} change`}
 					</p>
-					<p className="connection-card__tags">
+					{/* A div, not a p: DBTag renders a div, which is not allowed inside a paragraph. */}
+					<div className="connection-card__tags">
 						<DBTag semantic="informational">{connection.train}</DBTag>
 						{connection.status === 'on-time' ? (
 							<DBTag semantic="successful">On time</DBTag>
 						) : (
 							<DBTag semantic="warning">+5 min</DBTag>
 						)}
-					</p>
+					</div>
 				</div>
 				<div className="connection-card__offer">
 					<p className="connection-card__price">
@@ -199,7 +200,7 @@ export function ResultsPage({ request }: { request: SearchRequest }) {
 	}
 
 	return (
-		<DBSection width="medium" spacing="medium" aria-labelledby="results-heading">
+		<DBSection width="medium" aria-labelledby="results-heading">
 			<DBBreadcrumb aria-label="Breadcrumb">
 				<DBBreadcrumbItem>
 					<a href="#search">Search</a>
@@ -316,21 +317,23 @@ export function ResultsPage({ request }: { request: SearchRequest }) {
 			</DBHeadingH2>
 			<DBAccordion>
 				<DBAccordionItem headlinePlain="Travelling with children">
-					Children under 6 travel free. Children from 6 to 14 travel free with a parent or grandparent if they are
-					listed on the ticket.
+					<p>
+						Children under 6 travel free. Children from 6 to 14 travel free with a parent or grandparent if they
+						are listed on the ticket.
+					</p>
 				</DBAccordionItem>
 				<DBAccordionItem headlinePlain="Bike transport">
-					Bike spaces are limited. Reserve a space together with your ticket.
+					<p>Bike spaces are limited. Reserve a space together with your ticket.</p>
 				</DBAccordionItem>
 			</DBAccordion>
 
-			<p className="results-actions">
+			<div className="results-actions">
 				{/* Generation 2 showed a pen icon here. The Link has no icon props in Generation 3. */}
 				<DBLink href="#search">Change search</DBLink>
 				<DBButton variant="filled" iconTrailing="arrow_right">
 					Later connections
 				</DBButton>
-			</p>
+			</div>
 
 			<SelectionDialog connection={selected} onClose={() => setSelected(undefined)} />
 		</DBSection>

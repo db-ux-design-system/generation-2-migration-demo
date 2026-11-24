@@ -75,7 +75,7 @@ export function SearchPage({ initial, onSearch }: SearchPageProps) {
 	}
 
 	return (
-		<DBSection width="medium" spacing="medium" aria-labelledby="search-heading">
+		<DBSection width="medium" aria-labelledby="search-heading">
 			<DBHeadingH1 id="search-heading">Find a connection</DBHeadingH1>
 			<p className="search-hint">Fields marked with * are required.</p>
 
@@ -167,10 +167,26 @@ export function SearchPage({ initial, onSearch }: SearchPageProps) {
 					<DBButton type="submit" variant="brand" icon="magnifying_glass" disabled={isSearching}>
 						Search
 					</DBButton>
-					{/* DBLoadingIndicator is a status live region with its own label. */}
-					{isSearching && (
-						<DBLoadingIndicator variant="circular" size="small" indeterminate label="Searching for connections…" />
-					)}
+					{/*
+					 Screen readers announce a live region reliably only if it already exists
+					 before its content changes. DBLoadingIndicator is a live region itself, but
+					 it is only rendered while searching. So a status region that is always
+					 present carries the text, and the spinner inside it stays silent.
+					 */}
+					<div className="search-form__status" role="status">
+						{isSearching && (
+							<>
+								<DBLoadingIndicator
+									variant="circular"
+									size="small"
+									label="Searching for connections…"
+									showLabel={false}
+									aria-hidden="true"
+								/>
+								Searching for connections…
+							</>
+						)}
+					</div>
 				</div>
 			</form>
 

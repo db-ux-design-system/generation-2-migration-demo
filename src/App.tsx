@@ -1,7 +1,7 @@
 import {
+	DBControlPanelActions2,
 	DBControlPanelBrand,
 	DBControlPanelDesktop,
-	DBControlPanelMeta,
 	DBControlPanelMobile,
 	DBControlPanelNavigation,
 	DBControlPanelNavigationItem,
@@ -30,7 +30,7 @@ function pageFromHash(): Page {
 	return globalThis.location.hash === '#results' ? 'results' : 'search';
 }
 
-/** Navigation, brand and meta are shared by the desktop and the mobile Control Panel. */
+/** Navigation, brand and actions are shared by the desktop and the mobile Control Panel. */
 function navigation(page: Page): ReactNode {
 	return (
 		<DBControlPanelNavigation aria-label="Main navigation">
@@ -50,11 +50,15 @@ function navigation(page: Page): ReactNode {
 
 const brand = <DBControlPanelBrand>Booking</DBControlPanelBrand>;
 
-const meta = (
-	<DBControlPanelMeta>
+/*
+ Generation 2 showed the login in the meta bar. In Generation 3 profile actions
+ belong into actions2: desktop at the end of the Control Panel, mobile at the bottom of the drawer.
+ */
+const actions = (
+	<DBControlPanelActions2>
 		{/* Generation 2 showed a person icon here. The Link has no icon props in Generation 3. */}
 		<DBLink href="#search">Log in</DBLink>
-	</DBControlPanelMeta>
+	</DBControlPanelActions2>
 );
 
 export function App() {
@@ -74,10 +78,10 @@ export function App() {
 
 	return (
 		<DBShell controlPanelDesktopPosition="top">
-			<DBControlPanelDesktop brand={brand} meta={meta}>
+			<DBControlPanelDesktop brand={brand} actions2={actions}>
 				{navigation(page)}
 			</DBControlPanelDesktop>
-			<DBControlPanelMobile brand={brand} meta={meta} drawerHeaderText="Booking" burgerMenuLabel="Open menu">
+			<DBControlPanelMobile brand={brand} actions2={actions} drawerHeaderText="Booking" burgerMenuLabel="Open menu">
 				{navigation(page)}
 			</DBControlPanelMobile>
 			<DBShellContent
