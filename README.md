@@ -26,8 +26,6 @@ The code mixes the three ways interfaces were built in real projects:
 - **React wrappers** from `@db-ui/react-elements`: `DbButton`, `DbInput`, … (Web Components from `@db-ui/elements` under the hood)
 - **Self-built components** with hex colors, pixel values and Generation 2 base colors. There is no deterministic mapping for them, so the agent has to find out what each one is.
 
-Screenshots of the Generation 2 state: [search](docs/screenshots/generation-2-search.png), [results](docs/screenshots/generation-2-results.png).
-
 ## What makes this migration interesting
 
 The app code contains no hints, so you migrate it like a real project.
@@ -185,7 +183,7 @@ npm run build
 npm run dev
 ```
 
-Go through the open decisions and checks the agent listed. Compare the migrated pages with the [screenshots of the Generation 2 state](#whats-inside), or let the agent do it with the Chrome DevTools MCP.
+Go through the open decisions and checks the agent listed. To compare the migrated pages with the Generation 2 state, let the agent do it with the Chrome DevTools MCP. The original stays on the `main` branch.
 
 ### 7. Compare with the reference
 
