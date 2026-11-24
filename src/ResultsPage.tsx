@@ -82,9 +82,9 @@ function ConnectionCard({ connection, onSelect }: ConnectionCardProps) {
 			<figure>
 				<figcaption className="connection-card__layout">
 					<div className="connection-card__details">
-						<h3 id={headingId} className="connection-card__times">
+						<h2 id={headingId} className="connection-card__times">
 							{connection.departure} – {connection.arrival}
-						</h3>
+						</h2>
 						<p className="connection-card__meta">
 							{connection.duration} · {connection.changes === 0 ? 'direct' : `${connection.changes} change`}
 						</p>

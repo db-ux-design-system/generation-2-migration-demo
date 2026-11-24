@@ -86,7 +86,27 @@ Where the configuration lives:
 - **Kiro:** `.kiro/settings/mcp.json`. Open the MCP Server view in the Kiro panel and check that both servers are connected. Read-only tools are approved automatically, everything else asks you first.
 - **GitHub Copilot in VS Code:** `.mcp.json` in the project root. Run "MCP: List Servers" from the command palette and start both servers. `.vscode/mcp.json` stays for older VS Code setups.
 
-The Chrome DevTools MCP officially supports Google Chrome only. To use Microsoft Edge instead, add `--executablePath=<path to msedge>` to its arguments, at your own risk.
+The Chrome DevTools MCP officially supports Google Chrome only. To use Microsoft Edge instead, add `--executablePath` with the path to Edge as a separate entry at the end of the `chrome-devtools` arguments, at your own risk. Don't add it to the package entry `chrome-devtools-mcp@…`. Example for macOS:
+
+```json
+"args": [
+	"--yes",
+	"chrome-devtools-mcp@1.13.0",
+	"--isolated",
+	"--no-usage-statistics",
+	"--no-performance-crux",
+	"--executablePath=/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge"
+]
+```
+
+The path to Edge on other systems:
+
+| System | Value of `--executablePath` |
+| --- | --- |
+| Windows | `C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe` (backslashes doubled for JSON) |
+| Linux | `/usr/bin/microsoft-edge` |
+
+Keep this change local and don't commit it.
 
 Ask the agent "Which DB UX tools do you have?" to confirm the connection.
 
