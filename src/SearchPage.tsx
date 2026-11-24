@@ -12,7 +12,8 @@ import {
 	DBSection,
 	DBSelect,
 	DBSwitch,
-	DBTextarea
+	DBTextarea,
+	DBTooltip
 } from '@db-ux/react-core-components';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import cologne from './assets/offers/cologne.svg';
@@ -93,6 +94,11 @@ export function SearchPage({ initial, onSearch }: SearchPageProps) {
 					/>
 					<DBButton type="button" variant="ghost" icon="arrows_horizontal" noText onClick={swapStations}>
 						Swap stations
+						{/*
+						 Icon-only buttons get a tooltip, as the Generation 2 tooltip prop did.
+						 variant="label": the tooltip text is the button name, so it is not announced twice.
+						 */}
+						<DBTooltip variant="label">Swap stations</DBTooltip>
 					</DBButton>
 					<DBInput
 						id="to"

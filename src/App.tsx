@@ -48,7 +48,12 @@ function navigation(page: Page): ReactNode {
 	);
 }
 
-const brand = <DBControlPanelBrand>Booking</DBControlPanelBrand>;
+/* Generation 2 linked the logo to the start page. The link wraps the brand, as in the brand example "As Link". */
+const brand = (
+	<a href="#search">
+		<DBControlPanelBrand>Booking</DBControlPanelBrand>
+	</a>
+);
 
 /*
  Generation 2 showed the login in the meta bar. In Generation 3 profile actions
