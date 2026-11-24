@@ -1,0 +1,57 @@
+/* Own button styles: brand colors copied from the style guide PDF. */
+
+.action-button {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 10px 20px;
+	font-family: inherit;
+	font-size: 16px;
+	font-weight: 700;
+	line-height: 20px;
+	border: 1px solid transparent;
+	border-radius: 4px;
+	cursor: pointer;
+	transition: filter 0.15s ease;
+}
+
+.action-button:hover {
+	filter: brightness(0.9);
+}
+
+.action-button:focus {
+	outline: none;
+	border-color: #282d37;
+}
+
+.action-button:disabled {
+	opacity: 0.4;
+	cursor: not-allowed;
+}
+
+.action-button--primary {
+	color: #fff;
+	background-color: #ec0016;
+	box-shadow: 0 2px 4px rgba(236, 0, 22, 0.3);
+}
+
+.action-button--secondary {
+	color: #282d37;
+	background-color: #fff;
+	border-color: #646973;
+}
+
+.action-button--ghost {
+	color: #282d37;
+	background-color: transparent;
+}
+
+.action-button--sm {
+	padding: 6px 12px;
+	font-size: 14px;
+}
+
+.action-button--lg {
+	padding: 14px 28px;
+	font-size: 18px;
+}

@@ -1,5 +1,10 @@
 import { DbButton, DbCheckbox, DbInput, DbRadio, DbToggle } from '@db-ui/react-elements';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
+import cologne from './assets/offers/cologne.svg';
+import hamburg from './assets/offers/hamburg.svg';
+import munich from './assets/offers/munich.svg';
+import { ActionButton } from './components/ActionButton';
+import { OfferCard } from './components/OfferCard';
 
 /** Simulated response time of the connection search. */
 const SEARCH_DELAY_MS = 1200;
@@ -16,6 +21,14 @@ type SearchPageProps = {
 	initial: SearchRequest;
 	onSearch: (request: SearchRequest) => void;
 };
+
+type PopularConnection = { to: string; image: string; text: string; price: string; badge?: string };
+
+const popularConnections: PopularConnection[] = [
+	{ to: 'Hamburg Hbf', image: hamburg, text: 'Direct ICE every hour, about 3 h 40 min.', price: '19.99 €', badge: 'Saver fare' },
+	{ to: 'München Hbf', image: munich, text: 'Fast connection via Nuremberg, about 3 h 15 min.', price: '29.99 €' },
+	{ to: 'Köln Hbf', image: cologne, text: 'High-speed line, about 1 h 05 min.', price: '17.99 €', badge: 'Popular' }
+];
 
 /** Swaps the values of the two station inputs rendered by the Web Components. */
 function swapStations() {
@@ -145,6 +158,33 @@ export function SearchPage({ initial, onSearch }: SearchPageProps) {
 					</p>
 				</div>
 			</form>
+
+			<section className="popular-connections" aria-labelledby="popular-heading">
+				<h2 id="popular-heading" className="popular-connections__heading">
+					Popular connections from {initial.from}
+				</h2>
+				<div className="popular-connections__list">
+					{popularConnections.map((connection) => (
+						<OfferCard
+							key={connection.to}
+							image={connection.image}
+							title={connection.to}
+							text={connection.text}
+							price={connection.price}
+							badge={connection.badge}
+						>
+							<ActionButton
+								variant="secondary"
+								size="sm"
+								withArrow
+								onClick={() => onSearch({ ...initial, to: connection.to })}
+							>
+								Show trains
+							</ActionButton>
+						</OfferCard>
+					))}
+				</div>
+			</section>
 		</section>
 	);
 }

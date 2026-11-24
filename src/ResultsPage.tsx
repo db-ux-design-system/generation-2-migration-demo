@@ -1,5 +1,7 @@
 import { DbButton, DbLink, DbTab, DbTabBar } from '@db-ui/react-elements';
 import { useEffect, useRef, useState } from 'react';
+import { ActionButton } from './components/ActionButton';
+import { DropdownSelect } from './components/DropdownSelect';
 import type { SearchRequest } from './SearchPage';
 
 const dateFormat = new Intl.DateTimeFormat('en-GB', {
@@ -41,6 +43,32 @@ const returnTrips: Connection[] = [
 	{ id: 'r1', departure: '16:29', arrival: '20:31', duration: '4 h 02 min', train: 'ICE 1098', changes: 0, price: '45.99 €', status: 'on-time' },
 	{ id: 'r2', departure: '18:04', arrival: '22:40', duration: '4 h 36 min', train: 'ICE 696', changes: 1, price: '27.99 €', status: 'on-time' }
 ];
+
+type SortOrder = 'departure' | 'duration' | 'price';
+
+const sortOptions = [
+	{ value: 'departure', label: 'Departure' },
+	{ value: 'duration', label: 'Travel time' },
+	{ value: 'price', label: 'Price' }
+];
+
+/** Sorts a copy of the connections. Times, durations and prices have fixed formats, so text comparison works. */
+function sortConnections(connections: Connection[], order: SortOrder): Connection[] {
+	const key = (connection: Connection) =>
+		order === 'price'
+			? connection.price.padStart(8, '0')
+			: order === 'duration'
+				? connection.duration
+				: connection.departure;
+	return [...connections].sort((a, b) => key(a).localeCompare(key(b)));
+}
+
+/** Unchecks the filter chips. The chips are plain inputs, so this works on the DOM. */
+function resetFilters() {
+	for (const chip of document.querySelectorAll<HTMLInputElement>('.filter-chips input')) {
+		chip.checked = false;
+	}
+}
 
 type ConnectionCardProps = {
 	connection: Connection;
@@ -163,6 +191,7 @@ function SelectionDialog({ connection, onClose }: { connection?: Connection; onC
 
 export function ResultsPage({ request }: { request: SearchRequest }) {
 	const [selected, setSelected] = useState<Connection | undefined>();
+	const [sortOrder, setSortOrder] = useState<SortOrder>('departure');
 
 	return (
 		<section className="booking-section" aria-labelledby="results-heading">
@@ -203,19 +232,32 @@ export function ResultsPage({ request }: { request: SearchRequest }) {
 				<label htmlFor="filter-ice">ICE only</label>
 				<input type="checkbox" className="elm-chip" id="filter-saver" />
 				<label htmlFor="filter-saver">Saver fares</label>
+				<ActionButton variant="ghost" size="sm" onClick={resetFilters}>
+					Reset filters
+				</ActionButton>
+			</div>
+
+			<div className="results-toolbar">
+				<DropdownSelect
+					label="Sort by"
+					name="sort"
+					options={sortOptions}
+					value={sortOrder}
+					onChange={(value) => setSortOrder(value as SortOrder)}
+				/>
 			</div>
 
 			<DbTabBar>
 				<DbTab id="tab-outbound" name="direction" label="Outbound" active>
 					<div className="connection-list">
-						{outbound.map((connection) => (
+						{sortConnections(outbound, sortOrder).map((connection) => (
 							<ConnectionCard key={connection.id} connection={connection} onSelect={setSelected} />
 						))}
 					</div>
 				</DbTab>
 				<DbTab id="tab-return" name="direction" label="Return">
 					<div className="connection-list">
-						{returnTrips.map((connection) => (
+						{sortConnections(returnTrips, sortOrder).map((connection) => (
 							<ConnectionCard key={connection.id} connection={connection} onSelect={setSelected} />
 						))}
 					</div>
