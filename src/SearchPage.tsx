@@ -201,7 +201,11 @@ export function SearchPage({ initial, onSearch }: SearchPageProps) {
 							<img className="offer-card__image" src={connection.image} alt="" />
 							<div className="offer-card__body">
 								{connection.badge && (
-									<DBBadge semantic="successful" emphasis="strong">
+									/*
+									 Generation 2 showed a red label. Red stands for errors in Generation 3,
+									 so the highlight uses the informational semantic.
+									 */
+									<DBBadge semantic="informational" emphasis="strong">
 										{connection.badge}
 									</DBBadge>
 								)}

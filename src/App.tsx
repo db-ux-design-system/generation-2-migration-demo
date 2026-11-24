@@ -87,22 +87,25 @@ export function App() {
 			<DBShellContent
 				endSlot={
 					<DBFooter width="medium">
-						{/* Legal links and the copyright notice belong into Footer Meta. */}
+						{/*
+						 Legal links and the copyright notice belong into Footer Meta. DBFooter styles the
+						 list itself; inline links in size small have no arrow, as in the footer example.
+						 */}
 						<DBFooterMeta copyright="2026 Deutsche Bahn AG">
 							{/* Placeholder links: prevent "#" from resetting the page switch to the search page. */}
-							<nav className="app-footer" aria-label="Legal" onClick={(event) => event.preventDefault()}>
-								<ul className="app-footer__links">
+							<nav aria-label="Legal" onClick={(event) => event.preventDefault()}>
+								<ul>
 									<li>
-										<DBLink href="#">Imprint</DBLink>
+										<DBLink variant="inline" size="small" href="#">Imprint</DBLink>
 									</li>
 									<li>
-										<DBLink href="#">Privacy</DBLink>
+										<DBLink variant="inline" size="small" href="#">Privacy</DBLink>
 									</li>
 									<li>
-										<DBLink href="#">Terms of transport</DBLink>
+										<DBLink variant="inline" size="small" href="#">Terms of transport</DBLink>
 									</li>
 									<li>
-										<DBLink href="#">Accessibility statement</DBLink>
+										<DBLink variant="inline" size="small" href="#">Accessibility statement</DBLink>
 									</li>
 								</ul>
 							</nav>

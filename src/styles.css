@@ -162,17 +162,6 @@
 	margin-block-start: var(--db-spacing-fixed-xl);
 }
 
-/* --- Footer --- */
-
-.app-footer__links {
-	display: flex;
-	flex-wrap: wrap;
-	gap: var(--db-spacing-fixed-xs) var(--db-spacing-fixed-lg);
-	margin: 0;
-	padding: 0;
-	list-style: none;
-}
-
 /* --- Search: popular connections --- */
 
 .popular-connections {
