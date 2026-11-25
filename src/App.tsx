@@ -5,6 +5,7 @@ import {
 	DBControlPanelMobile,
 	DBControlPanelNavigation,
 	DBControlPanelNavigationItem,
+	DBCustomButton,
 	DBFooter,
 	DBFooterMeta,
 	DBLink,
@@ -61,8 +62,13 @@ const brand = (
  */
 const actions = (
 	<DBControlPanelActions2>
-		{/* Generation 2 showed a person icon here. The Link has no icon props in Generation 3. */}
-		<DBLink href="#search">Log in</DBLink>
+		{/*
+		 Generation 2 showed a person icon next to the login link. DBLink has no icon props,
+		 so DBCustomButton gives the link the look of a ghost button with the icon.
+		 */}
+		<DBCustomButton variant="ghost" icon="person">
+			<a href="#search">Log in</a>
+		</DBCustomButton>
 	</DBControlPanelActions2>
 );
 

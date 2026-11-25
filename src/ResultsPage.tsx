@@ -6,12 +6,12 @@ import {
 	DBButton,
 	DBCard,
 	DBCheckbox,
+	DBCustomButton,
 	DBDialog,
 	DBDialogFooter,
 	DBDialogHeader,
 	DBHeadingH1,
 	DBHeadingH2,
-	DBLink,
 	DBNotification,
 	DBSection,
 	DBTabItem,
@@ -328,8 +328,13 @@ export function ResultsPage({ request }: { request: SearchRequest }) {
 			</DBAccordion>
 
 			<div className="results-actions">
-				{/* Generation 2 showed a pen icon here. The Link has no icon props in Generation 3. */}
-				<DBLink href="#search">Change search</DBLink>
+				{/*
+				 Generation 2 showed a pen icon here. DBLink has no icon props, so DBCustomButton
+				 gives the link the look of a ghost button with the icon, like "Log in".
+				 */}
+				<DBCustomButton variant="ghost" icon="pen">
+					<a href="#search">Change search</a>
+				</DBCustomButton>
 				<DBButton variant="filled" iconTrailing="arrow_right">
 					Later connections
 				</DBButton>

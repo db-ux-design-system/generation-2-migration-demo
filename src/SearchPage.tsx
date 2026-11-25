@@ -39,6 +39,16 @@ const popularConnections: PopularConnection[] = [
 	{ to: 'Köln Hbf', image: cologne, text: 'High-speed line, about 1 h 05 min.', price: '17.99 €', badge: 'Popular' }
 ];
 
+/** "München Hbf" -> "offer-munchen-hbf": id of the heading of an offer card. */
+function offerHeadingId(station: string): string {
+	return `offer-${station
+		.normalize('NFD')
+		.replaceAll(/[^\w\s-]/g, '')
+		.trim()
+		.toLowerCase()
+		.replaceAll(/\s+/g, '-')}`;
+}
+
 type SearchPageProps = {
 	initial: SearchRequest;
 	onSearch: (request: SearchRequest) => void;
@@ -215,7 +225,9 @@ export function SearchPage({ initial, onSearch }: SearchPageProps) {
 										{connection.badge}
 									</DBBadge>
 								)}
-								<DBHeadingH3 visualSize="h5">{connection.to}</DBHeadingH3>
+								<DBHeadingH3 id={offerHeadingId(connection.to)} visualSize="h5">
+									{connection.to}
+								</DBHeadingH3>
 								<p className="offer-card__text">{connection.text}</p>
 							</div>
 							<div className="offer-card__footer">
@@ -225,6 +237,8 @@ export function SearchPage({ initial, onSearch }: SearchPageProps) {
 									variant="outlined"
 									size="small"
 									iconTrailing="arrow_right"
+									// Three buttons say "Show trains"; the card heading tells them apart.
+									aria-describedby={offerHeadingId(connection.to)}
 									onClick={() => onSearch({ from, to: connection.to, date, passengers, travelClass })}
 								>
 									Show trains
